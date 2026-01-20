@@ -1,34 +1,27 @@
 pipeline {
     agent { label "Jenkins-Agent" }
 
-    environment {
-        SCANNER_HOME = tool 'sonarqube-scanner'
-        SONARQUBE = 'sonar-server'
-    }
-
     stages {
         stage("Checkout Code") {
-            steps {
-                checkout scm
-            }
+            steps { checkout scm }
         }
 
         stage("Build") {
-            steps {
-                echo "Building the application..."
-            }
+            steps { echo "Building the application..." }
         }
 
         stage("SonarQube Analysis") {
             steps {
-                withSonarQubeEnv("${SONARQUBE}") {
+                withSonarQubeEnv('sonar-server') {
                     sh """
-                        ${SCANNER_HOME}/bin/sonarqube-scanner \
-                          -Dsonar.projectKey=audit_key \
-                          -Dsonar.projectName=Audit_Vision \
-                          -Dsonar.sources=. \
-                          -Dsonar.sourceEncoding=UTF-8 \
-                          -Dsonar.python.coverage.reportPaths=coverage.xml
+                    docker run --rm \
+                      -v \$(pwd):/usr/src \
+                      sonarsource/sonar-scanner-cli:4.9.2 \
+                      -Dsonar.projectKey=audit_key \
+                      -Dsonar.projectName=Audit_Vision \
+                      -Dsonar.sources=. \
+                      -Dsonar.host.url=\$SONAR_HOST_URL \
+                      -Dsonar.login=\$SONAR_AUTH_TOKEN
                     """
                 }
             }
@@ -44,14 +37,8 @@ pipeline {
     }
 
     post {
-        always {
-            echo "======== always ========"
-        }
-        success {
-            echo "======== pipeline executed successfully ========"
-        }
-        failure {
-            echo "======== pipeline execution failed ========"
-        }
+        always { echo "Pipeline finished." }
+        success { echo "Pipeline executed successfully." }
+        failure { echo "Pipeline failed." }
     }
 }

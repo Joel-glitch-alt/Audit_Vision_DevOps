@@ -2,7 +2,7 @@ pipeline {
     agent { label "Jenkins-Agent" }
 
     environment {
-        SCANNER_HOME = tool 'sonar-scanner'
+        SCANNER_HOME = tool 'sonarqube-scanner'
         SONARQUBE = 'Sonar-Server'
     }
 
@@ -23,7 +23,7 @@ pipeline {
             steps {
                 withSonarQubeEnv("${SONARQUBE}") {
                     sh """
-                        ${SCANNER_HOME}/bin/sonar-scanner \
+                        ${SCANNER_HOME}/bin/sonarqube-scanner \
                           -Dsonar.projectKey=audit_key \
                           -Dsonar.projectName=Audit_Vision \
                           -Dsonar.sources=. \

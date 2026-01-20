@@ -24,7 +24,7 @@ pipeline {
                 withSonarQubeEnv("${SONARQUBE}") {
                     sh """
                         ${SCANNER_HOME}/bin/sonarqube-scanner \
-                          -Dsonar.projectKey=audit_key \
+                          -Dsonar.projectKey=sonar-jenkins-token \
                           -Dsonar.projectName=Audit_Vision \
                           -Dsonar.sources=. \
                           -Dsonar.sourceEncoding=UTF-8 \

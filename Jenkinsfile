@@ -11,21 +11,21 @@ pipeline {
         }
 
         stage("SonarQube Analysis") {
-            steps {
-                withSonarQubeEnv('sonar-server') {
-                    sh """
-                    docker run --rm \
-                      -v \$(pwd):/usr/src \
-                      sonarsource/sonar-scanner-cli:4.9.2 \
-                      -Dsonar.projectKey=audit_key \
-                      -Dsonar.projectName=Audit_Vision \
-                      -Dsonar.sources=. \
-                      -Dsonar.host.url=\$SONAR_HOST_URL \
-                      -Dsonar.login=\$SONAR_AUTH_TOKEN
-                    """
-                }
-            }
+    steps {
+        withSonarQubeEnv('sonar-server') {
+            sh """
+            docker run --rm \
+              -v \$(pwd):/usr/src \
+              sonarsource/sonar-scanner-cli:latest \
+              -Dsonar.projectKey=audit_key \
+              -Dsonar.projectName=Audit_Vision \
+              -Dsonar.sources=. \
+              -Dsonar.host.url=\$SONAR_HOST_URL \
+              -Dsonar.login=\$SONAR_AUTH_TOKEN
+            """
         }
+    }
+}
 
         stage("Quality Gate") {
             steps {

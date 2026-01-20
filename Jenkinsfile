@@ -1,6 +1,9 @@
 pipeline {
-    agent {
-        label "Jenkins-Agent"
+    agent { label "Jenkins-Agent" }
+
+    environment {
+        SCANNER_HOME = tool 'sonar-scanner'
+        SONARQUBE = 'Sonar-Server'
     }
 
     stages {
@@ -13,6 +16,29 @@ pipeline {
         stage("Build") {
             steps {
                 echo "Building the application..."
+            }
+        }
+
+        stage("SonarQube Analysis") {
+            steps {
+                withSonarQubeEnv("${SONARQUBE}") {
+                    sh """
+                        ${SCANNER_HOME}/bin/sonar-scanner \
+                          -Dsonar.projectKey=audit_key \
+                          -Dsonar.projectName=Audit_Vision \
+                          -Dsonar.sources=. \
+                          -Dsonar.sourceEncoding=UTF-8 \
+                          -Dsonar.python.coverage.reportPaths=coverage.xml
+                    """
+                }
+            }
+        }
+
+        stage("Quality Gate") {
+            steps {
+                timeout(time: 15, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                }
             }
         }
     }

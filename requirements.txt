@@ -1,0 +1,15 @@
+# Web Framework (choose one based on your app)
+Flask==3.0.0
+# OR
+# FastAPI==0.104.1
+# uvicorn==0.24.0
+
+# Common dependencies
+requests==2.31.0
+python-dotenv==1.0.0
+
+# Database (uncomment if needed)
+# psycopg2-binary==2.9.9
+# SQLAlchemy==2.0.23
+
+# Add your specific dependencies here
